@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# From https://github.com/iovisor/bcc/blob/master/INSTALL.md#kernel-configuration,
+# From https://github.com/iovisor/bcc/blob/master/INSTALL.md#kernel-configuration
+# and https://github.com/iovisor/bcc/blob/master/docs/kernel_config.md
 # getting only flags for a Kernel >= 4.7
 
 # Mandatories flags
