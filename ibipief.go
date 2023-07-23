@@ -42,8 +42,10 @@ func main() {
 
 	for {
 		event := <-eventsChannel
-		pid := int(binary.LittleEndian.Uint32(event[0:4])) // Treat first 4 bytes as LittleEndian Uint32
-		comm := string(bytes.TrimRight(event[4:], "\x00")) // Remove excess 0's from comm, treat as string
+		// Treat first 4 bytes as LittleEndian Uint32
+		pid := int(binary.LittleEndian.Uint32(event[0:4]))
+		// Remove excess 0's from comm, treat as string
+		comm := string(bytes.TrimRight(event[4:], "\x00"))
 		fmt.Printf("%d %v\n", pid, comm)
 	}
 

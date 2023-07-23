@@ -2,8 +2,6 @@
 
 Some experiments with eBPF
 
-Thanks to https://github.com/lizrice/libbpfgo-beginners/tree/main
-
 ## Build the lab
 
 Create Docker image that compiles source:
@@ -24,18 +22,22 @@ $ ./run.sh
 $ sudo ./ibipief
 ```
 
-## Troubleshooting
+## Useful stuff
 
-```bash
-$ llvm-objdump -h ibipief.bpf.o          
+- [Every Boring Problem Found in eBPF](https://tmpout.sh/2/4.html)
 
-$ llvm-objdump -s ibipief.bpf.o
+- [bcc Reference Guide](https://android.googlesource.com/platform/external/bcc/+/refs/heads/android10-c2f2-s1-release/docs/reference_guide.md#6-bpf_get_current_comm) (API)
 
-$ llvm-objdump -S ibipief.bpf.o
+- [unknown opcode 8d](https://stackoverflow.com/questions/70392721/unable-to-load-ebpf-program-loading-stops-at-13-func-bpf-prog1-type-id-9-inval)
 
-$ sudo gdb ./ibipief
+- [Learning eBPF](https://cilium.isovalent.com/hubfs/Learning-eBPF%20-%20Full%20book.pdf) (book)
 
-```
+- [aquasecurity examples](https://github.com/aquasecurity/libbpfgo/tree/main/selftest)
 
 ## Thanks to
 
+- https://github.com/lizrice/libbpfgo-beginners/tree/main
+
+- https://github.com/grantseltzer/libbpfgo-example
+
+- https://blog.aquasec.com/libbpf-ebpf-programs
