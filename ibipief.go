@@ -3,6 +3,8 @@ package main
 import "C"
 
 import (
+	"bytes"
+	"encoding/binary"
 	"fmt"
 	"os"
 	"os/signal"
@@ -23,7 +25,6 @@ func main() {
 	must(err)
 	fmt.Println(">>> object loaded")
 
-	// https://github.com/grantseltzer/libbpfgo-example/blob/master/main.go
 	prog, err := bpfModule.GetProgram("ibipief")
 	must(err)
 	fmt.Println(">>> got program ibipief")
@@ -31,33 +32,23 @@ func main() {
 	_, err = prog.AttachKprobe("__x64_sys_execve")
 	must(err)
 
-	// go helpers.TracePipeListen()
-	// <-sig
+	eventsChannel := make(chan []byte)
+	rb, err := bpfModule.InitRingBuf("events", eventsChannel)
+	if err != nil {
+		os.Exit(-1)
+	}
 
-	// prog, err = bpfModule.GetProgram("hello_bpftrace")
-	// must(err)
-	// _, err = prog.AttachRawTracepoint("sys_enter")
-	// must(err)
+	rb.Start()
 
-	// e := make(chan []byte, 300)
-	// p, err := bpfModule.InitPerfBuf("events", e, nil, 1024)
-	// must(err)
+	for {
+		event := <-eventsChannel
+		pid := int(binary.LittleEndian.Uint32(event[0:4])) // Treat first 4 bytes as LittleEndian Uint32
+		comm := string(bytes.TrimRight(event[4:], "\x00")) // Remove excess 0's from comm, treat as string
+		fmt.Printf("%d %v\n", pid, comm)
+	}
 
-	// p.Start()
-
-	// counter := make(map[string]int, 350)
-	// go func() {
-	// 	for data := range e {
-	// 		comm := string(data)
-	// 		counter[comm]++
-	// 	}
-	// }()
-
-	// <-sig
-	// p.Stop()
-	// for comm, n := range counter {
-	// 	fmt.Printf("%s: %d\n", comm, n)
-	// }
+	rb.Stop()
+	rb.Close()
 }
 
 func must(err error) {
