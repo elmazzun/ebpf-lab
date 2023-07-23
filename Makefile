@@ -21,7 +21,7 @@ $(TARGET): $(GO_SRC)
 $(TARGET_BPF): $(BPF_SRC)
 	clang \
 		-I /usr/include/$(ARCH)-linux-gnu \
-		-v -g -O0 -c -target bpf \
+		-v -g -O2 -c -target bpf \
 		-o $@ $<
 
 .PHONY: clean

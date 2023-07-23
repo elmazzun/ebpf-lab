@@ -1,15 +1,13 @@
 package main
 
-import (
-	"C"
+import "C"
 
-	bpf "github.com/aquasecurity/libbpfgo"
-	"github.com/aquasecurity/libbpfgo/helpers"
-)
 import (
 	"fmt"
 	"os"
 	"os/signal"
+
+	bpf "github.com/aquasecurity/libbpfgo"
 )
 
 func main() {
@@ -25,14 +23,16 @@ func main() {
 	must(err)
 	fmt.Println(">>> object loaded")
 
-	prog, err := bpfModule.GetProgram("./ibipief")
+	// https://github.com/grantseltzer/libbpfgo-example/blob/master/main.go
+	prog, err := bpfModule.GetProgram("ibipief")
 	must(err)
 	fmt.Println(">>> got program ibipief")
-	_, err = prog.AttachKprobe(sys_execve)
+
+	_, err = prog.AttachKprobe("__x64_sys_execve")
 	must(err)
 
-	go helpers.TracePipeListen()
-	<-sig
+	// go helpers.TracePipeListen()
+	// <-sig
 
 	// prog, err = bpfModule.GetProgram("hello_bpftrace")
 	// must(err)
