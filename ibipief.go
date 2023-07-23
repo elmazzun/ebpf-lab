@@ -7,6 +7,7 @@ import (
 	"github.com/aquasecurity/libbpfgo/helpers"
 )
 import (
+	"fmt"
 	"os"
 	"os/signal"
 )
@@ -17,13 +18,16 @@ func main() {
 
 	bpfModule, err := bpf.NewModuleFromFile("ibipief.bpf.o")
 	must(err)
+	fmt.Println(">>> module done")
 	defer bpfModule.Close()
 
 	err = bpfModule.BPFLoadObject()
 	must(err)
+	fmt.Println(">>> object loaded")
 
-	prog, err := bpfModule.GetProgram("ibipief")
+	prog, err := bpfModule.GetProgram("./ibipief")
 	must(err)
+	fmt.Println(">>> got program ibipief")
 	_, err = prog.AttachKprobe(sys_execve)
 	must(err)
 

@@ -1,29 +1,18 @@
-FROM ubuntu:22.04
-
-# Define variables.
-ARG GOVERSION=1.15.15
-ARG ARCH=amd64
+# https://github.com/lizrice/libbpfgo-beginners/pull/5/commits/95c92b8db70565d55a9030aec45b76ea153803f1
+FROM golang:1.20-bullseye
 
 # Download development environment.
-RUN apt update && \
-    apt install -y \
-        libbpf-dev \
-        make \
+RUN apt-get update && \
+    apt-get install -y \
         clang \
         llvm \
+        libbpf-dev \
         libelf-dev
-
-# Install Go specific version.
-RUN apt install -y wget && \
-    wget https://golang.org/dl/go${GOVERSION}.linux-${ARCH}.tar.gz && \
-    tar -xf go${GOVERSION}.linux-${ARCH}.tar.gz && \
-    mv go/ /usr/local/ && \
-    ln -s /usr/local/go/bin/go /usr/local/bin/ && \
-    rm -rf go${GOVERSION}.linux-${ARCH}.tar.gz
 
 # Setup working directory.
 RUN mkdir -p /app
 WORKDIR /app
 
+# https://github.com/lizrice/libbpfgo-beginners/pull/5/commits/39805fc690b96a30ca9866220eae6a2efe11e6cb
 # Execute build command.
 ENTRYPOINT ["/usr/bin/make", "all"]

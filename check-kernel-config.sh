@@ -11,6 +11,14 @@ grep \
     -e "CONFIG_BPF_JIT=y" \
     -e "CONFIG_HAVE_EBPF_JIT=y" \
     -e "CONFIG_BPF_EVENTS=y" \
+    -e "CONFIG_KPROBES=y" \
+    -e "CONFIG_UPROBES=y" \
+    -e "CONFIG_DEBUG_FS=y" \
+    -e "CONFIG_FTRACE=y" \
+    -e "CONFIG_FTRACE_SYSCALLS=y" \
+    -e "CONFIG_KPROBE_EVENTS=y" \
+    -e "CONFIG_UPROBE_EVENTS=y" \
+    -e "CONFIG_BPF_EVENTS=y" \
     /boot/config-$(uname --kernel-release)
 
 echo

@@ -23,3 +23,16 @@ $ ./run.sh
 ```
 $ sudo ./ibipief
 ```
+
+## Troubleshooting
+
+```bash
+$ llvm-objdump -h ibipief.bpf.o          
+
+$ llvm-objdump -s ibipief.bpf.o
+
+$ llvm-objdump -S ibipief.bpf.o
+
+$ sudo gdb ./ibipief
+
+```
