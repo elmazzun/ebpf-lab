@@ -1,9 +1,9 @@
 // +build ignore
 #include "ibipief.bpf.h"
 
-// Avoid error "cannot call GPL-restricted function from non-GPL compatible program"
-// https://github.com/nyrahul/ebpf-guide/blob/master/docs/gpl_license_ebpf.rst
-char __license[] __attribute__((section("license"), used)) = "GPL";
+#ifndef SIGTERM
+#define SIGTERM 15
+#endif
 
 struct {
     __uint(type, BPF_MAP_TYPE_RINGBUF);
@@ -11,8 +11,9 @@ struct {
 } events SEC(".maps");
 
 long ringbuffer_flags = 0;
+int counter = 0;
+const int MAX_COUNTER = 100;
 
-// Example: tracing a message on a kprobe
 SEC("kprobe/sys_execve")
 int ibipief(void *ctx)
 {
@@ -21,7 +22,8 @@ int ibipief(void *ctx)
     proc_info *process;
 
     // Reserve space on the ringbuffer for the sample
-    process = bpf_ringbuf_reserve(&events, sizeof(proc_info), ringbuffer_flags);
+    process = bpf_ringbuf_reserve(&events, sizeof(proc_info),
+        ringbuffer_flags);
     if (!process) {
         return 0;
     }
@@ -30,5 +32,17 @@ int ibipief(void *ctx)
     bpf_get_current_comm(&process->comm, 100);
 
     bpf_ringbuf_submit(process, ringbuffer_flags);
+
+    counter++;
+    bpf_printk("Yo, found stuff");
+    if (counter == MAX_COUNTER) {
+        bpf_printk("Raising SIGTERM, got %d syscalls\n", counter);
+        bpf_send_signal_thread(SIGTERM);
+    }
+
     return 0;
 }
+
+// Avoid "cannot call GPL-restricted function from non-GPL
+// compatible program" error
+char LICENSE[] SEC("license") = "GPL";
