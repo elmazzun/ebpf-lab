@@ -1,4 +1,5 @@
 # https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-22-04
+readonly GO_VERSION="1.16.7"
 
 echo ">>> Update your existing list of packages"
 sudo apt update
@@ -26,10 +27,22 @@ apt-cache policy docker-ce
 
 sudo apt install -y docker-ce
 
+sleep 3
+
 sudo systemctl status docker
 
+
 echo ">>> Avoid typing sudo whenever you run the docker command by adding your username to the docker group"
-sudo usermod -aG docker ${USER}
-echo "vagrant" | su - ${USER}
+sudo usermod -aG docker vagrant
+echo "vagrant" | su - vagrant
 
 sudo docker run hello-world
+
+# https://www.digitalocean.com/community/tutorials/how-to-install-go-on-ubuntu-20-04
+echo ">>> Installing golang v$GO_VERSION"
+curl -OL https://golang.org/dl/go$GO_VERSION.linux-amd64.tar.gz  --output-dir /tmp
+sudo tar -C /usr/local -xf /tmp/go$GO_VERSION.linux-amd64.tar.gz
+rm -rf /tmp/go$GO_VERSION.linux-amd64.tar.gz
+echo "export PATH=$PATH:/usr/local/go/bin" >> /home/vagrant/.profile
+source ~/.profile
+go version

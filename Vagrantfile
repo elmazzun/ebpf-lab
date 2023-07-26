@@ -13,6 +13,10 @@ Vagrant.configure("2") do |config|
     vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
   end
 
+  config.vm.synced_folder "./lab", "/vagrant/lab"
+
+  # Provision script runs automatically only when the machine gets created
+  # If you need to run it again, run vagrant up --provision
   config.vm.provision "shell", path: "vm-lab-setup.sh"
 
 end
