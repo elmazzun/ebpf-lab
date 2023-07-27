@@ -31,12 +31,13 @@ sleep 3
 
 sudo systemctl status docker
 
-
 echo ">>> Avoid typing sudo whenever you run the docker command by adding your username to the docker group"
 sudo usermod -aG docker vagrant
 echo "vagrant" | su - vagrant
 
-sudo docker run hello-world
+sleep 3
+
+docker run hello-world
 
 # https://www.digitalocean.com/community/tutorials/how-to-install-go-on-ubuntu-20-04
 echo ">>> Installing golang v$GO_VERSION"
