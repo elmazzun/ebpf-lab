@@ -1,29 +1,13 @@
-ARCH=$(shell uname -m)
+PROJECTS := helloworld
 
-TARGET := ibipief
-TARGET_BPF := $(TARGET).bpf.o
+.PHONY: all $(PROJECTS)
 
-# https://github.com/lizrice/libbpfgo-beginners/pull/5/commits/ed85ae895e90452530baa96e813ba17c3e8c129b
-GO_SRC := *.go Makefile
-BPF_SRC := *.bpf.c *.bpf.h Makefile
+all: $(PROJECTS)
 
-LIBBPF_HEADERS := /usr/include/bpf
-LIBBPF_OBJ := /usr/lib/$(ARCH)-linux-gnu/libbpf.a
+$(PROJECTS):
+	$(MAKE) -C $@
 
-.PHONY: all
-all: $(TARGET) $(TARGET_BPF)
-
-go_env := CC="clang" CGO_CFLAGS="-I $(LIBBPF_HEADERS)" CGO_LDFLAGS="$(LIBBPF_OBJ)"
-
-$(TARGET): $(GO_SRC)
-	$(go_env) go build -o $(TARGET) -buildvcs=false
-
-$(TARGET_BPF): $(BPF_SRC)
-	clang \
-		-I /usr/include/$(ARCH)-linux-gnu \
-		-g -O2 -c -target bpf \
-		-o $@ $<
-
-.PHONY: clean
 clean:
-	go clean
+	for dir in $(PROJECTS); do \
+		$(MAKE) -C $$dir clean; \
+	done
