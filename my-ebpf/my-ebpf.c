@@ -3,7 +3,7 @@
 
 #include <sys/resource.h>
 #include <bpf/libbpf.h>
-#include "helloworld.skel.h"
+#include "my-ebpf.skel.h"
 
 static int libbpf_print_fn(enum libbpf_print_level level,
                            const char *format,
@@ -27,7 +27,7 @@ static void bump_memlock_rlimit(void)
 
 int main(int argc, char **argv)
 {
-    struct helloworld_bpf *skel;
+    struct my_ebpf_bpf *skel;
     int err;
 
     libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
@@ -39,21 +39,21 @@ int main(int argc, char **argv)
     bump_memlock_rlimit();
 
     /* Open BPF application */
-    skel = helloworld_bpf__open();
+    skel = my_ebpf_bpf__open();
     if (!skel) {
         fprintf(stderr, "Failed to open BPF skeleton\n");
         return 1;
     }
 
     /* Load & verify BPF programs */
-    err = helloworld_bpf__load(skel);
+    err = my_ebpf_bpf__load(skel);
     if (err) {
         fprintf(stderr, "Failed to load and verify BPF skeleton\n");
         goto cleanup;
     }
 
     /* Attach tracepoint handler */
-    err = helloworld_bpf__attach(skel);
+    err = my_ebpf_bpf__attach(skel);
     if (err) {
         fprintf(stderr, "Failed to attach BPF skeleton\n");
         goto cleanup;
@@ -69,6 +69,6 @@ int main(int argc, char **argv)
     }
 
 cleanup:
-    helloworld_bpf__destroy(skel);
+    my_ebpf_bpf__destroy(skel);
     return -err;
 }

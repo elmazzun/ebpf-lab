@@ -15,47 +15,6 @@ container building eBPF pipeline or together with https://github.com/elmazzun/de
 **[virtualized environment](https://github.com/elmazzun/debian-12-vm) where**
 **this repository is included as submodule**.
 
-## Creating the Virtual Machine
-
-The provisioning script `prepare-vm.sh` will install the following components:
-
-- `clang`: the compiler used to make eBPF target files from C programs.  
-  clang is a compiler front-end for C (and other languages), using LLVM as the 
-  back-end.
-
-- `libbpf`: the BPF program loader. It takes compiled BPF ELF object file, 
-  post-process it as necessary, sets up various kernel objects (maps, programs, 
-  etc) and triggers BPF programs loading and verification.  
-  libbpf is downloaded from official repository https://github.com/libbpf/libbpf.git, 
-  compiled and installed in the VM.
-
-- `bpftool`: a tool used to inspect and manipulate eBPF programs.  
-  bpftool is downloaded from official repository https://github.com/libbpf/bpftool, 
-  compiled and installed in the VM.
-
-The structure of this repository is pretty straightforward:
-
-```bash
-$ tree -L 1
-.
-├── lab           # The whole eBPF working environment
-├── prepare-vm.sh # VM provisioning script
-├── README.md     # This file
-└── Vagrantfile   # VM configuration script
-```
-
-- `Vagrantfile` will create the VM, configure it, mount `lab` folder inside the 
-  VM and provision it by running `prepare-vm.sh`.
-
-- `prepare-vm.sh` is the provisioning script: it downloads and installs the 
-  necessary packages (clang, libbpf, bpftool and others).
-
-- `lab`: this folder contains the eBPF projects I will work on.  
-  `lab` is a Vagrant *synced folder*: this means that you may edit from your 
-  host machine whatever you want in `lab` and all the changes are automatically 
-  applied to   `lab` guest machine and viceversa.  
-  If you destroy the VM, `lab` files won't be lost.
-
 ## Working with the VM
 
 Compile `my-project` by adding the string `my-project` in `lab/Makefile` first 

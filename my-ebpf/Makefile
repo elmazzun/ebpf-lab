@@ -1,8 +1,8 @@
 # https://github.com/lizrice/learning-ebpf/blob/main/chapter5/Makefile
 
-TARGET = helloworld
+TARGET = my-ebpf
 ARCH := $(shell uname -m | sed 's/x86_64/x86/' | sed 's/aarch64/arm64/')
-BPFTOOL ?= /usr/local/sbin/bpftool
+BPFTOOL ?= /usr/sbin/bpftool
 
 BPF_OBJ = ${TARGET:=.bpf.o}
 USER_C = ${TARGET:=.c}
@@ -34,9 +34,9 @@ $(TARGET): $(USER_C) $(USER_SKEL)
 		-g -O2 \
 		-D__TARGET_ARCH_$(ARCH) \
 		$(LIBBPF_INCLUDES) \
-		-o helloworld helloworld.c \
+		-o my-ebpf my-ebpf.c \
 		$(LIBBPF_LIBS) \
 		-lbpf -lelf -lz
  
 clean:
-	rm -f $(TARGET) ${BPF_OBJ}
+	rm -f $(TARGET) ${BPF_OBJ} ${USER_SKEL}
