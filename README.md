@@ -1,23 +1,21 @@
 # My eBPF lab
 
-Creating and testing eBPF programs on a virtualized Ubuntu machine.
+⚠️⚠️⚠️
 
-Although loading eBPF programs into the kernel is safe, I did not want to 
-install the compilation toolchain for eBPF programs on my host and am 
-therefore using a virtual machine to host the toolchain and run test eBPF 
-programs.
+This repository is under heavy refactoring!  
+**Do not clone it!**  
+I am currently modifying the environment from a virtualized-based environment 
+to a container-based.  
+I am planning to adapt this repository so that it can be used as a stand-alone 
+container building eBPF pipeline or together with https://github.com/elmazzun/debian-12-vm.
+
+⚠️⚠️⚠️
+
+**You may test this eBPF lab in your local machine or you may use my**
+**[virtualized environment](https://github.com/elmazzun/debian-12-vm) where**
+**this repository is included as submodule**.
 
 ## Creating the Virtual Machine
-
-Before anything, you must install [Vagrant](https://developer.hashicorp.com/vagrant/docs/installation) 
-and [VirtualBox](https://www.virtualbox.org/wiki/Downloads).
-
-In order to build the working environment, you will create a Ubuntu-based 
-VM by running `vagrant up` command in the root folder of this repository.
-
-**The VM comes with no desktop environment**: since you just have to run 
-`make` and `sudo ./my-ebpf-program` from the VM, there's no need for a 
-desktop environment.
 
 The provisioning script `prepare-vm.sh` will install the following components:
 
@@ -60,25 +58,12 @@ $ tree -L 1
 
 ## Working with the VM
 
-Ideally, this is how you would work while developing new eBPF programs:
-
-- create/turn on the VM with `vagrant up`.  
-  Once up, you may access the VM by running `vagrant ssh` or by using VirtualBox 
-  GUI, getting a shell and getting inside the VM by using default credentials, 
-  which are `vagrant` username and `vagrant` password.
-
-- if you begin a new eBPF project create a new folder in `lab` (eg `my-project`) 
-  and put your code in `my-project` folder together with its Makefile;
-
-- compile `my-project` by adding the string `my-project` in `lab/Makefile` first 
-  row; `lab/Makefile` loops in all the folders in `lab` and runs the Makefile 
-  found in each directory.  
-  Thus, if you want to compile all the projects in `lab` just run `make` while 
-  being in `/home/vagrant/lab`; you can also compile a single project (say 
-  `my-project`) by positioning yourself in `lab` and running `make my-project`.  
-  **Be sure to run `make` inside the VM**.
-
-- run the binary with `sudo` **always from inside the VM**.
+Compile `my-project` by adding the string `my-project` in `lab/Makefile` first 
+row; `lab/Makefile` loops in all the folders in `lab` and runs the Makefile 
+found in each directory.  
+Thus, if you want to compile all the projects in `lab` just run `make` while 
+being in `/home/vagrant/lab`; you can also compile a single project (say 
+`my-project`) by positioning yourself in `lab` and running `make my-project`.  
 
 ## Useful stuff
 
