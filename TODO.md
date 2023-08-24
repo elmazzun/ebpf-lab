@@ -13,4 +13,5 @@ toolchain:
       compiled eBPF binary
 - [X] instead of downloading and compiling `libbpf` and `bpftools`,  
   see if they are available from Ubuntu repositories
+- [ ] add `make` command as `ENTRYPOINT` in `Dockerfile`
 - [ ] use some higher level library (Cilium?)
