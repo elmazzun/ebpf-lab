@@ -9,9 +9,8 @@ eBPF projects:
 - [ ] make a IPv6 packet dropper
 
 toolchain:
-- [ ] make the build process returns a Docker image containing the 
+- [X] make the build process returns a Docker image containing the 
       compiled eBPF binary
-- [ ] instead of downloading and compiling `libbpf` and `bpftools`,  
+- [X] instead of downloading and compiling `libbpf` and `bpftools`,  
   see if they are available from Ubuntu repositories
-- [ ] move `vmlinux.h` in a shared folder for all projects
 - [ ] use some higher level library (Cilium?)
