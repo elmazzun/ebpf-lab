@@ -11,4 +11,4 @@ docker run -it \
     --mount type=bind,source=/sys/fs/bpf,target=/sys/fs/bpf \
     --mount type=bind,source=/sys/kernel/debug,target=/sys/kernel/debug \
     -v "$PWD_ABSOLUTE_PATH/my-ebpf":/my-ebpf \
-    elmazzun/ebpf-lab:0.1.0 bash
+    "$(whoami)/ebpf-lab:0.1.0" make

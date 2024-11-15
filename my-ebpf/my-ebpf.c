@@ -29,6 +29,7 @@ int main(int argc, char **argv)
 {
     struct my_ebpf_bpf *skel;
     int err;
+    int counter = 0;
 
     libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
 
@@ -64,11 +65,15 @@ int main(int argc, char **argv)
 
     for (;;) {
         /* trigger our BPF program */
+        if (++counter == 10) {
+            goto cleanup;
+        }
         fprintf(stderr, ".");
         sleep(1);
     }
 
 cleanup:
+    printf("Reached 10 iterations, cleaning BPF program...\n");
     my_ebpf_bpf__destroy(skel);
     return -err;
 }
