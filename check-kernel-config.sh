@@ -19,7 +19,7 @@ grep \
     -e "CONFIG_KPROBE_EVENTS=y" \
     -e "CONFIG_UPROBE_EVENTS=y" \
     -e "CONFIG_BPF_EVENTS=y" \
-    /boot/config-$(uname --kernel-release)
+    "/boot/config-$(uname --kernel-release)"
 
 echo
 
@@ -31,4 +31,4 @@ grep \
     -e "CONFIG_NET_ACT_GACT=m" \
     -e "CONFIG_DUMMY=m" \
     -e "CONFIG_VXLAN=m" \
-    /boot/config-$(uname --kernel-release)
+    "/boot/config-$(uname --kernel-release)"

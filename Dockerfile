@@ -10,7 +10,9 @@ RUN apt-get update && apt-get install -y \
     make \
     libbpf-dev \
     bpftool \
-    bpfcc-tools
+    bpfcc-tools \
+    linux-hheaders-$(uname -r) \
+    linux-tools-$(uname -r) \
+    libbpfcc-dev
 
-# Import eBPF environment
-COPY ./my-ebpf /root/my-ebpf
+VOLUME /my-ebpf
