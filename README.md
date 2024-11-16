@@ -2,6 +2,8 @@
 
 Compile and run a simple eBPF program within a Docker container.
 
+Using `libbpf`; in `cilium` branch I am testing eBPF developing with `ebpf-go` (github.com/cilium/ebpf).
+
 Every `tracepoint/syscalls/sys_enter_execve` match will print the process that invoked `sys_enter_execve` syscall.
 
 - [Compile and run](#compile-and-run)
