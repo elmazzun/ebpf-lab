@@ -1,3 +1,5 @@
 #!/bin/bash
 
-docker build -t "$(whoami)/ebpf-lab:0.1.0" .
+docker build \
+    -f Dockerfile.cilium \
+    -t "$(whoami)/ebpf-lab-cilium:0.1.0" .

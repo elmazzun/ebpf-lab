@@ -113,6 +113,8 @@ ii  python3-bpfcc                   0.26.0+ds-1                    all          
 
 ## Useful stuff
 
+https://ebpf-go.dev/guides/getting-started/#compile-ebpf-c-and-generate-scaffolding-using-bpf2go
+
 - [Why libbpf and CO-RE](https://nakryiko.com/posts/bcc-to-libbpf-howto-guide/#why-libbpf-and-bpf-co-re)
 
 - [libbpf overwiew](https://libbpf.readthedocs.io/en/latest/libbpf_overview.html)
