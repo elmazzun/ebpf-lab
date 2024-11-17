@@ -1,14 +1,8 @@
 #!/bin/bash
 
-PWD_ABSOLUTE_PATH=$(pwd)
-
-docker run -it \
-    --rm \
+# --privileged:   for seting memlock rlimit
+# --network host: for using host network
+docker run --rm -it \
     --privileged \
-    --cap-add=SYS_ADMIN \
-    --cap-add=NET_ADMIN \
-    --cap-add=BPF \
-    --mount type=bind,source=/sys/fs/bpf,target=/sys/fs/bpf \
-    --mount type=bind,source=/sys/kernel/debug,target=/sys/kernel/debug \
-    -v "$PWD_ABSOLUTE_PATH/my-ebpf":/my-ebpf \
-    "$(whoami)/ebpf-lab-cilium:0.1.0" ./my-ebpf
+    --network host \
+    "$(whoami)/my-ebpf-runtime:0.1.0"
