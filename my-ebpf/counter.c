@@ -29,23 +29,23 @@ int count_packets(struct xdp_md *ctx) {
     struct ethhdr *eth = data;
     if (data + sizeof(struct ethhdr) > data_end) {
         bpf_printk("Invalid Ethernet header, drop packet\n");
-	return XDP_DROP;
+        return XDP_DROP;
     }
 
     if (bpf_ntohs(eth->h_proto) != ETH_P_IP) {
         //bpf_printk("Ethernet not IPv4, dropping\n");
-	return XDP_DROP;
+        return XDP_DROP;
     }
 
     struct iphdr *iph = data + sizeof(struct ethhdr);
     if (data + sizeof(struct ethhdr) + sizeof(struct iphdr) > data_end) {
         bpf_printk("Invalid IP header, drop packet\n");
-	return XDP_DROP;
+        return XDP_DROP;
     }
 
     if (iph->protocol == IPPROTO_ICMP) {
         bpf_printk("Found ICMP, drop packet\n");
-	return XDP_DROP;
+        return XDP_DROP;
     }
 
     return XDP_PASS; 

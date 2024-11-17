@@ -3,15 +3,35 @@ package main
 import (
 	"log"
 	"net"
+	"net/http"
 	"os"
 	"os/signal"
 	"time"
 
 	"github.com/cilium/ebpf/link"
 	"github.com/cilium/ebpf/rlimit"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
+var DroppedPackets = prometheus.NewCounter(
+	prometheus.CounterOpts{
+		Name: "icmp_dropped_packets",
+		Help: "Number of ICMP packets dropped.",
+	},
+)
+
+func init() {
+	prometheus.MustRegister(DroppedPackets)
+}
+
 func main() {
+
+	go func() {
+		http.Handle("/metrics", promhttp.Handler())
+		log.Fatal(http.ListenAndServe(":8080", nil))
+	}()
+
 	// Remove resource limits for kernels <5.11.
 	if err := rlimit.RemoveMemlock(); err != nil {
 		log.Fatal("Removing memlock:", err)
@@ -47,6 +67,7 @@ func main() {
 	tick := time.Tick(time.Second)
 	stop := make(chan os.Signal, 5)
 	signal.Notify(stop, os.Interrupt)
+
 	for {
 		select {
 		case <-tick:
@@ -56,6 +77,7 @@ func main() {
 				log.Fatal("Map lookup:", err)
 			}
 			log.Printf("Received %d packets", count)
+			DroppedPackets.Inc()
 		case <-stop:
 			log.Print("Received signal, exiting..")
 			return

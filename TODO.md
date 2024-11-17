@@ -5,6 +5,7 @@ doc:
 - [ ] write about *Library support for data structure relocations* in NOTES.md
 
 eBPF projects:
+- [ ] export eBPF in Prometheus metrics
 - [ ] make a eBPF program container aware
 - [ ] make a IPv6 packet dropper
 
