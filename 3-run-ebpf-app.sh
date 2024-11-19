@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# --privileged:   for seting memlock rlimit
+# --privileged:   for setting memlock rlimit
 # --network host: for using host network
 docker run --rm -it \
     --privileged \

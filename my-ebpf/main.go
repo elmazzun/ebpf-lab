@@ -14,15 +14,31 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-var DroppedPackets = prometheus.NewCounter(
-	prometheus.CounterOpts{
-		Name: "icmp_dropped_packets",
-		Help: "Number of ICMP packets dropped.",
-	},
+var (
+	TotalPackets = prometheus.NewCounter(
+		prometheus.CounterOpts{
+			Name: "total_packets",
+			Help: "Number of received packets.",
+		},
+	)
+	DroppedInvalidPackets = prometheus.NewCounter(
+		prometheus.CounterOpts{
+			Name: "invalid_dropped_packets",
+			Help: "Number of invalid packets dropped.",
+		},
+	)
+	DroppedIcmpPackets = prometheus.NewCounter(
+		prometheus.CounterOpts{
+			Name: "icmp_dropped_packets",
+			Help: "Number of ICMP packets dropped.",
+		},
+	)
 )
 
 func init() {
-	prometheus.MustRegister(DroppedPackets)
+	prometheus.MustRegister(TotalPackets)
+	prometheus.MustRegister(DroppedInvalidPackets)
+	prometheus.MustRegister(DroppedIcmpPackets)
 }
 
 func main() {
@@ -44,7 +60,7 @@ func main() {
 	}
 	defer objs.Close()
 
-	ifname := "wlp0s20f3" // Change this to an interface on your machine.
+	ifname := "enp0s31f6" // Change this to an interface on your machine.
 	iface, err := net.InterfaceByName(ifname)
 	if err != nil {
 		log.Fatalf("Getting interface %s: %s", ifname, err)
@@ -60,25 +76,40 @@ func main() {
 	}
 	defer link.Close()
 
-	log.Printf("Counting incoming packets on %s..", ifname)
+	log.Printf("Counting incoming packets on %s...", ifname)
 
 	// Periodically fetch the packet counter from PktCount,
 	// exit the program when interrupted.
 	tick := time.Tick(time.Second)
-	stop := make(chan os.Signal, 5)
-	signal.Notify(stop, os.Interrupt)
+	stopper := make(chan os.Signal, 5)
+	signal.Notify(stopper, os.Interrupt)
 
 	for {
 		select {
 		case <-tick:
-			var count uint64
+			var count, dropInvalidPackets, dropIcmpPackets uint64
+
 			err := objs.PktCount.Lookup(uint32(0), &count)
 			if err != nil {
 				log.Fatal("Map lookup:", err)
 			}
 			log.Printf("Received %d packets", count)
-			DroppedPackets.Inc()
-		case <-stop:
+			TotalPackets.Add(float64(count))
+
+			err = objs.PktCount.Lookup(uint32(1), &dropInvalidPackets)
+			if err != nil {
+				log.Fatal("Map lookup:", err)
+			}
+			log.Printf("Dropped %d invalid packets", dropInvalidPackets)
+			DroppedInvalidPackets.Add(float64(dropInvalidPackets))
+
+			err = objs.PktCount.Lookup(uint32(2), &dropIcmpPackets)
+			if err != nil {
+				log.Fatal("Map lookup:", err)
+			}
+			log.Printf("Dropped %d ICMP packets", dropIcmpPackets)
+			DroppedIcmpPackets.Add(float64(dropIcmpPackets))
+		case <-stopper:
 			log.Print("Received signal, exiting..")
 			return
 		}
